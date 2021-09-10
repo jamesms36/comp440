@@ -4,14 +4,41 @@ import numpy
 
 def geneticAlg():
     # Implement genetic algorithm here
-    print()
+    pop = Population(size=3)
+    pop.print_pop()
+
 
 class Population:
-    def __init__(self):
+    def __init__(self, size=100):
+        self.size = size
+        self.population = [Gene(50) for x in range(size)]
+
+    def select_next_gen(self, size=100):
         print()
 
-    def select_next_gen(self):
+    def get_pop(self):
+        return self.population
+
+    def print_pop(self):
+        for i in self.population:
+            print(i.get_gene())
+
+    def crossover(self):
+        # crosses over random genes within the population
         print()
+
+    def mutate(self):
+        # mulates all the genes within the population
+        for i in range(len(self.population)):
+            self.population[i] = self.population[i].mutate()
+
+    def reproduce(self):
+        # selects the next generation, then crosses over, then mutates
+        self.select_next_gen()
+        self.crossover()
+        self.mutate()
+        print()
+
 
 class Gene:
     def __init__(self, gene_size = 50):
@@ -50,12 +77,11 @@ class Gene:
     def crossover(self, partner, k):
         print("")
 
-
-def main():
+def testStuff():
     a = Gene()
     ones_gene = Gene()
     ones = [1] * 50
-    #threes = [3] * 50
+    # threes = [3] * 50
     a.set_gene(ones)
     ones_gene.set_gene(ones)
     print("a vs ones score:", a.vs_ones())
@@ -71,10 +97,14 @@ def main():
             print("halting execution")
             break
 
-    #(rounds, c1, c2) = a.compete(ones_gene)
-    #print("Number of rounds:", rounds)
-    #print("Ones PAC-mites remaining:", c1)
-    #print("Threes PAC-mites remaining:", c2)
+    # (rounds, c1, c2) = a.compete(ones_gene)
+    # print("Number of rounds:", rounds)
+    # print("Ones PAC-mites remaining:", c1)
+    # print("Threes PAC-mites remaining:", c2)
+
+
+def main():
+    geneticAlg()
 
 
 if __name__ == "__main__":
