@@ -5,7 +5,41 @@ import random
 
 def geneticAlg():
     # Implement genetic algorithm here
-    print()
+    pop = Population(size=3)
+    pop.print_pop()
+
+
+class Population:
+    def __init__(self, size=100):
+        self.size = size
+        self.population = [Gene(50) for x in range(size)]
+
+    def select_next_gen(self, size=100):
+        print()
+
+    def get_pop(self):
+        return self.population
+
+    def print_pop(self):
+        for i in self.population:
+            print(i.get_gene())
+
+    def crossover(self):
+        # crosses over random genes within the population
+        print()
+
+    def mutate(self):
+        # mulates all the genes within the population
+        for i in range(len(self.population)):
+            self.population[i] = self.population[i].mutate()
+
+    def reproduce(self):
+        # selects the next generation, then crosses over, then mutates
+        self.select_next_gen()
+        self.crossover()
+        self.mutate()
+        print()
+
 
 class Population:
     def __init__(self):
@@ -56,8 +90,8 @@ class Gene:
         return score
 
     def crossover(self, partner):
-        start = random.randint(0, len(self.gene[i]) - 1)
-        end = start + len(self.gene[i]) / 2
+        start = random.randint(0, len(self.gene) - 1)
+        end = start + len(self.gene) / 2
         
         for i in range(len(self.gene)):
             if ((i >= start and i < end) or ((end % len(self.gene[i])) < len(self.gene[i]) and i < end)):
@@ -68,12 +102,11 @@ class Gene:
         print(start, end)
 
 
-
 def main():
     a = Gene()
     ones_gene = Gene()
     ones = [1] * 50
-    #threes = [3] * 50
+    # threes = [3] * 50
     a.set_gene(ones)
     ones_gene.set_gene(ones)
 
@@ -92,6 +125,7 @@ def main():
     population.get_genes()[0].crossover(population.get_genes()[0])
     print("after", population.get_genes()[0])
     print("after", population.get_genes()[1])
+
 
 if __name__ == "__main__":
     main()
