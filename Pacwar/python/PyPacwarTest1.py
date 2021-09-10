@@ -55,12 +55,17 @@ class Gene:
             score = rounds + 10*c1
         return score
 
-    def crossover(self, partner, k):
-        start = random.randint(0, len(self.gene[i]) / 2)
-        for i in range(start, start + len(self.gene[i]) / 2:
-            int temp = self.gene[i]
-            self.gene[i] = partner[i]
-            partner[i] = temp
+    def crossover(self, partner):
+        start = random.randint(0, len(self.gene[i]) - 1)
+        end = start + len(self.gene[i]) / 2
+        
+        for i in range(len(self.gene)):
+            if ((i >= start and i < end) or ((end % len(self.gene[i])) < len(self.gene[i]) and i < end)):
+                temp = self.gene[i]
+                self.gene[i] = partner[i]
+                partner[i] = temp
+
+        print(start, end)
 
 
 
@@ -73,13 +78,20 @@ def main():
     ones_gene.set_gene(ones)
 
     population = Population()
-    for i in range(0, 1000):
+    for i in range(0, 2):
         gene = Gene()
         score = gene.vs_ones()
         print(score)
-        if (score > 150):
-            population.add_gene(gene)
+        population.add_gene(gene)
 
+        # if (score > 150):
+        #     population.add_gene(gene)
+
+    print("before", population.get_genes()[0])
+    print("before", population.get_genes()[1])
+    population.get_genes()[0].crossover(population.get_genes()[0])
+    print("after", population.get_genes()[0])
+    print("after", population.get_genes()[1])
 
 if __name__ == "__main__":
     main()
