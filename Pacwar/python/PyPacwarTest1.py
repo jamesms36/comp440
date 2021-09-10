@@ -1,10 +1,25 @@
 import _PyPacwar
 import numpy
+import random
 
 
 def geneticAlg():
     # Implement genetic algorithm here
     print()
+
+class Population:
+    def __init__(self):
+        self.genes = []
+        print()
+
+    def add_gene(self, gene):
+        self.genes.append(gene)
+
+    def select_next_gen(self):
+        print()
+
+    def get_genes(self):
+        return self.genes
 
 class Gene:
     def __init__(self, gene_size = 50):
@@ -41,7 +56,12 @@ class Gene:
         return score
 
     def crossover(self, partner, k):
-        print("")
+        start = random.randint(0, len(self.gene[i]) / 2)
+        for i in range(start, start + len(self.gene[i]) / 2:
+            int temp = self.gene[i]
+            self.gene[i] = partner[i]
+            partner[i] = temp
+
 
 
 def main():
@@ -51,25 +71,15 @@ def main():
     #threes = [3] * 50
     a.set_gene(ones)
     ones_gene.set_gene(ones)
-    print("a vs ones score:", a.vs_ones())
 
-    for i in range(1, 100000):
+    population = Population()
+    for i in range(0, 1000):
         gene = Gene()
         score = gene.vs_ones()
         print(score)
-        if (score > 10000):
-            print("decent gene found")
-            print(gene.get_gene())
-            print("decent score:, ", score)
-            print("halting execution")
-            break
-
-    #(rounds, c1, c2) = a.compete(ones_gene)
-    #print("Number of rounds:", rounds)
-    #print("Ones PAC-mites remaining:", c1)
-    #print("Threes PAC-mites remaining:", c2)
+        if (score > 150):
+            population.add_gene(gene)
 
 
 if __name__ == "__main__":
     main()
-
