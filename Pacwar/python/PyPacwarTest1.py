@@ -6,6 +6,13 @@ def geneticAlg():
     # Implement genetic algorithm here
     print()
 
+class Population:
+    def __init__(self):
+        print()
+
+    def select_next_gen(self):
+        print()
+
 class Gene:
     def __init__(self, gene_size = 50):
         self.gene_size = gene_size
@@ -53,7 +60,7 @@ def main():
     ones_gene.set_gene(ones)
     print("a vs ones score:", a.vs_ones())
 
-    for i in range(1, 100000):
+    for i in range(1, 10000):
         gene = Gene()
         score = gene.vs_ones()
         print(score)
