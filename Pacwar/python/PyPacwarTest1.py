@@ -9,122 +9,228 @@ def geneticAlg():
     pop.print_pop()
 
 
+class Scorer:
+    def __init__(self):
+        self.top_seqs = []
+
+    def add_top_seq(self, seq):
+        self.top_seqs.append(seq)
+
+    def score_seq(self, seq):
+        score = 0
+        for top_seq in self.top_seqs:
+            (rounds, c1, c2) = _PyPacwar.battle(seq.get_seq(), top_seq)
+            if c2 == 0:
+                score += (500 - rounds) * 3 + 10000
+            else:
+                score += rounds + 10 * c1
+        return score
+
+
 class Population:
-    def __init__(self, size=100):
-        self.size = size
-        self.population = [Gene(50) for x in range(size)]
+    def __init__(self, size=-1):
+        if (size != -1):
+            self.size = size
+            self.population = [Gene_Seq(50) for x in range(size)]
+        else:
+            self.population = []
 
-    def select_next_gen(self, size=100):
-        print()
+        self.scorer = Scorer()
 
-    def get_pop(self):
+    def get_population(self):
         return self.population
 
-    def print_pop(self):
+    def add_gene_seq(self, gene_seq):
+        self.population.append(gene_seq)
+
+    def set_scorer(self, scorer):
+        self.scorer = scorer
+
+    def print_population(self):
         for i in self.population:
-            print(i.get_gene())
-
-    def crossover(self):
-        # crosses over random genes within the population
-        print()
-
-    def mutate(self):
-        # mulates all the genes within the population
-        for i in range(len(self.population)):
-            self.population[i] = self.population[i].mutate()
+            print(i.get_seq())
 
     def reproduce(self):
-        # selects the next generation, then crosses over, then mutates
-        self.select_next_gen()
-        self.crossover()
-        self.mutate()
-        print()
+        temp_population = self.population.copy()
+        new_population = []
+        random.shuffle(temp_population)
+
+        # Creates new generation from current population
+        for i in range(0, len(temp_population), 2):
+            j = 0
+            seq1 = temp_population[i]
+            seq2 = Gene_Seq()
+            if i < len(temp_population) - 1:
+                seq2 = temp_population[i + 1]
+
+            temp_seqs = []
+
+            # Generate possible sequence modifications
+            while j < 10:
+                temp_seq1 = seq1.get_seq_copy()
+
+                # If seq1 is not the last in the list, crossover and mutate the lists
+                if i < len(temp_population) - 1:
+                    temp_seq2 = seq2.get_seq_copy()
+                    temp_seq1.crossover(temp_seq2)
+                    temp_seq2.mutate(3)
+                    temp_seqs.append(temp_seq2)
+
+                temp_seq1.mutate(3)
+                temp_seqs.append(temp_seq1)
+
+                j += 1
+
+            max_score = 0
+            max = Gene_Seq()
+            second_score = 0
+            second = Gene_Seq()
+
+            # Selects two best mutations
+            for seq in temp_seqs:
+                score = self.scorer.score_seq(seq)
+
+                if score > max_score:  # Found a new best sequence
+                    second_score = max_score
+                    second = max
+                    max_score = score
+                    max = seq
+                elif score > second_score:  # Found a new second best sequence
+                    second_score = score
+                    second = seq
+
+            new_population.append(max)
+            new_population.append(second)
+
+        self.population = new_population
+
+    def get_avg_population_score(self):
+        avg = 0
+        for seq in self.population:
+            avg += self.scorer.score_seq(seq)
+        avg /= len(self.population)
+        return avg
+
+    def get_max_seq(self):
+        max_score = 0
+        max_seq = []
+        for seq in self.population:
+            score = self.scorer.score_seq(seq)
+            if score > max_score:
+                max_score = score
+                max_seq = seq
+        return max_score, max_seq
 
 
-class Population:
-    def __init__(self):
-        self.genes = []
-        print()
+class Gene_Seq:
+    def __init__(self, seq_size = 50):
+        self.seq_size = seq_size
+        self.seq = list(numpy.random.randint(low = 0,high=4,size=self.seq_size))
 
-    def add_gene(self, gene):
-        self.genes.append(gene)
+    def get_seq(self):
+        return self.seq
 
-    def select_next_gen(self):
-        print()
+    def get_seq_copy(self):
+        new_seq = Gene_Seq(0)
+        new_seq.set_seq(self.seq.copy())
+        new_seq.set_seq_size(self.seq_size)
+        return new_seq
 
-    def get_genes(self):
-        return self.genes
-
-class Gene:
-    def __init__(self, gene_size = 50):
-        self.gene_size = gene_size
-        self.gene = list(numpy.random.randint(low = 0,high=4,size=self.gene_size))
-
-    def get_gene(self):
-        return self.gene
-
-    def print_gene(self):
+    def print_seq(self):
         separator = ""
-        return separator.join(str(x) for x in self.gene)
+        return separator.join(str(x) for x in self.seq)
 
-    def set_gene(self, gene):
-        self.gene = gene
+    def set_seq_size(self, seq_size):
+        self.seq_size = seq_size
 
-    def mutate(self, p):
-        replace_list = numpy.random.rand(self.gene_size) < p
-        print(replace_list)
-        for i in range(self.gene_size):
-            if replace_list[i]:
-                self.gene[i] = numpy.random.randint(low = 0, high=4)
+    def set_seq(self, seq):
+        self.seq = seq
+
+    def set_gene(self, gene_idx, gene):
+        self.seq[gene_idx] = gene
 
     def compete(self, competitor):
-        return _PyPacwar.battle(self.get_gene(), competitor.get_gene())
+        return _PyPacwar.battle(self.get_seq(), competitor.get_seq())
 
     def vs_ones(self):
         ones = [1] * 50
-        (rounds, c1, c2) = _PyPacwar.battle(self.get_gene(), ones)
+        (rounds, c1, c2) = _PyPacwar.battle(self.get_seq(), ones)
         if c2 == 0:
-            score = 1000/rounds + 10000
+            score = 500 - rounds + 10000
         else:
             score = rounds + 10*c1
         return score
 
     def crossover(self, partner):
-        start = random.randint(0, len(self.gene) - 1)
-        end = start + len(self.gene) / 2
+        start = random.randint(0, self.seq_size - 1)
+        end = start + 7 # self.seq_size / 2
         
-        for i in range(len(self.gene)):
-            if ((i >= start and i < end) or ((end % len(self.gene[i])) < len(self.gene[i]) and i < end)):
-                temp = self.gene[i]
-                self.gene[i] = partner[i]
-                partner[i] = temp
+        for i in range(self.seq_size):
+            if ( (i >= start and i < end) or ( (end % self.seq_size) < end and i < end)):
+                temp = self.seq[i]
+                self.seq[i] = partner.get_seq()[i]
+                partner.set_gene(i, temp)
 
-        print(start, end)
+    def mutate(self, max_replaceable):
+        # Determines how many genes to mutate (must be less than or equal to all of them)
+        replace_num = min(random.randint(0, max_replaceable), self.seq_size - 1)
+        replace_list = []
+
+        # determines the indeces to replace
+        while len(replace_list) < replace_num:
+            idx = random.randint(0, self.seq_size - 1)
+            if idx not in replace_list:
+                replace_list.append(idx)
+
+        for idx in replace_list:
+            self.seq[idx] = numpy.random.randint(low = 0, high=4)
 
 
 def main():
-    a = Gene()
-    ones_gene = Gene()
+    scorer = Scorer()
+    scorer.add_top_seq([1] * 50)
+    scorer.add_top_seq([3] * 50)
+    scorer.add_top_seq([0,3,0,2,1,0,0,1,1,1,1,1,2,2,2,2,3,0,0,3,3,2,2,1,2,1,2,2,1,2,1,1,2,3,1,3,3,2,1,3,0,1,3,2,3,2,1,1,3,1])
+    scorer.add_top_seq([0,3,1,0,0,0,0,0,1,1,1,1,1,2,1,2,0,1,1,0,3,1,1,1,2,1,1,2,1,1,2,1,1,2,1,3,2,1,1,2,1,1,2,0,2,2,1,1,3,1])
+    #10111132101122010001111111111222101111122231002131
+
+    #  10310000111102213003333312333323312333300133213310
+    #01310000100000303103123323323123123333310313223313
+
+
+
+    a = Gene_Seq()
+    ones_seq = Gene_Seq()
     ones = [1] * 50
     # threes = [3] * 50
-    a.set_gene(ones)
-    ones_gene.set_gene(ones)
+    a.set_seq(ones)
+    ones_seq.set_seq(ones)
 
     population = Population()
-    for i in range(0, 2):
-        gene = Gene()
-        score = gene.vs_ones()
-        print(score)
-        population.add_gene(gene)
+    population.set_scorer(scorer)
+    for i in range(0, 1000):
+        seq = Gene_Seq()
+        score = seq.vs_ones()
 
-        # if (score > 150):
-        #     population.add_gene(gene)
+        if (score > 400):
+            population.add_gene_seq(seq)
 
-    print("before", population.get_genes()[0])
-    print("before", population.get_genes()[1])
-    population.get_genes()[0].crossover(population.get_genes()[0])
-    print("after", population.get_genes()[0])
-    print("after", population.get_genes()[1])
+    tries = 1
+    while tries < 51:
+        population.reproduce()
+        score, seq = population.get_max_seq()
+        print(tries, population.get_avg_population_score(), score, seq.print_seq())
+        tries += 1
+
+    # b1 = population.get_population()[0]
+    # b2 = population.get_population()[1]
+    # print("before", b1.print_seq())
+    # b1.mutate(3)
+    # print(b1.print_seq())
+    # print("before", b2.print_seq())
+    # population.get_population()[0].crossover(population.get_population()[1])
+    # print("after ", population.get_population()[0].print_seq())
+    # print("after ", population.get_population()[1].print_seq())
 
 
 if __name__ == "__main__":
