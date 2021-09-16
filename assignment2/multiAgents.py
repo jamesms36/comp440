@@ -84,7 +84,7 @@ class ReflexAgent(Agent):
                 score -= 200 / ghostDist
 
         if newFood[newPos[0]][newPos[1]]:
-            score += 10
+            score += 150
 
         closest_food = [-1, -1]
         closest_dist = 9999999
@@ -94,7 +94,11 @@ class ReflexAgent(Agent):
                     closest_dist = manhattanDistance(newPos, (i, j))
                     closest_food = [i, j]
 
-        score += 300 / closest_dist
+        # if closest_dist == 0:
+        #     score += 150
+        # else:
+        #     score += 100 / closest_dist
+        print(closest_dist, closest_food)
 
         return score
 
