@@ -212,10 +212,10 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         Returns the minimax score given a gamestate, a start player, and an initial depth
         """
-
         # Evaluates if it reached an end state or went through max depth
         if gameState.isWin() or gameState.isLose() or depth == 0:
             return self.evaluationFunction(gameState), None
+
 
         best_action = None
         if player == 0:  # Searches for the max state
@@ -232,6 +232,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1, alpha, beta)
                 if value < beta:
                     beta = value
+                # print(alpha, beta)
                 if beta <= alpha:
                     return alpha, None
             return beta, None
