@@ -226,7 +226,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                     min_val = value
                     move = action
                     alpha = max(alpha, min_val)
-                if min_val >= beta:
+                if min_val > beta:
                     return min_val, move
             return min_val, move
 
@@ -237,10 +237,10 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                     max_val = value
                     move = action
                     beta = min(beta, max_val)
-                if max_val <= alpha:
+                if max_val < alpha:
                     return max_val, move
             return max_val, move
-        
+
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -312,8 +312,8 @@ def betterEvaluationFunction(currentGameState):
         score = 0
         for i in range(len(ghostPositions)):
             ghostNewDist = manhattanDistance(newPos, ghostPositions[i])
-            if newScaredTimes[i] > ghostNewDist * 1.5 and newScaredTimes[i] != 0:
-                score += 10 * newScaredTimes[i] * (newScaredTimes[i] - ghostNewDist)
+            if newScaredTimes[i] > ghostNewDist * 1.8 and newScaredTimes[i] != 0:
+                score += 10 * newScaredTimes[i] * (newScaredTimes[i] - ghostNewDist * 1.8)
             if ghostNewDist != 0:
                 score -= 50 / ghostNewDist
             elif ghostNewDist == 0: # dont have it move on top of ghost
@@ -325,10 +325,10 @@ def betterEvaluationFunction(currentGameState):
             for j in range(newFood.height):
 
                 x = 0
-                if manhattanDistance(newPos, (i, j)) > 5:
-                    x = manhattanDistance(newPos, (i, j)) + random.randint(-4,4)
-                else:
-                    x = manhattanDistance(newPos, (i, j))
+                # if manhattanDistance(newPos, (i, j)) > 6:
+                #     x = manhattanDistance(newPos, (i, j))
+                # else:
+                x = manhattanDistance(newPos, (i, j))
 
                 if curFood[i][j] and x < new_closest_dist:
                     new_closest_dist = x
