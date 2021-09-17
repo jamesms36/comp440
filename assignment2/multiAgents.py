@@ -68,7 +68,6 @@ class ReflexAgent(Agent):
         """
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
-        curPos = currentGameState.getPacmanPosition()
         newPos = successorGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
         curFood = currentGameState.getFood()
@@ -83,12 +82,10 @@ class ReflexAgent(Agent):
             if newScaredTimes[i] > ghostNewDist * 1.5 and newScaredTimes[i] != 0:
                 score += 10 * newScaredTimes[i] * (newScaredTimes[i] - ghostNewDist)
             elif ghostNewDist != 0:
-                print("ghost dist ", ghostNewDist)
                 score -= 50 / ghostNewDist
             elif ghostNewDist == 0: # dont have it move on top of ghost
                 score -= 5000
 
-        new_closest_food = [-1, -1]
         new_closest_dist = 9999999
 
         for i in range(newFood.width):
@@ -97,14 +94,11 @@ class ReflexAgent(Agent):
 
                 if curFood[i][j] and manhattanDistance(newPos, (i, j)) < new_closest_dist:
                     new_closest_dist = manhattanDistance(newPos, (i, j))
-                    new_closest_food = [i, j]
 
         if new_closest_dist == 0:
             score += 30
         else:
             score += 20 / new_closest_dist
-
-        print("new score: ", score, " close dist ", new_closest_dist, " food", new_closest_food, "pacman", newPos)
 
         return score
 
@@ -265,8 +259,55 @@ def betterEvaluationFunction(currentGameState):
 
     DESCRIPTION: <write something here so we know what you did>
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    maxScore = 0
+    # print("eval")
+    for action in currentGameState.getLegalActions():
+        successorGameState = currentGameState.generatePacmanSuccessor(action)
+        curPos = currentGameState.getPacmanPosition()
+        newPos = successorGameState.getPacmanPosition()
+        newFood = successorGameState.getFood()
+        curFood = currentGameState.getFood()
+        newGhostStates = successorGameState.getGhostStates()
+        newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+
+        ghostPositions = [ghostState.getPosition() for ghostState in newGhostStates]
+
+        score = 0
+        for i in range(len(ghostPositions)):
+            ghostNewDist = manhattanDistance(newPos, ghostPositions[i])
+            if newScaredTimes[i] > ghostNewDist * 1.5 and newScaredTimes[i] != 0:
+                score += 10 * newScaredTimes[i] * (newScaredTimes[i] - ghostNewDist)
+            if ghostNewDist != 0:
+                score -= 50 / ghostNewDist
+            elif ghostNewDist == 0: # dont have it move on top of ghost
+                score -= 5000
+
+        new_closest_dist = 9999999
+
+        for i in range(newFood.width):
+            for j in range(newFood.height):
+
+                x = 0
+                if manhattanDistance(newPos, (i, j)) > 5:
+                    x = manhattanDistance(newPos, (i, j)) + random.randint(-4,4)
+                else:
+                    x = manhattanDistance(newPos, (i, j))
+
+                if curFood[i][j] and x < new_closest_dist:
+                    new_closest_dist = x
+
+        if new_closest_dist == 0:
+            score += 30
+        else:
+            score += 20 / new_closest_dist
+
+        if score > maxScore:
+            maxScore = score
+
+
+    return currentGameState.getScore() + maxScore
+
 
 # Abbreviation
 better = betterEvaluationFunction
