@@ -166,7 +166,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         gameState.isLose():
         Returns whether or not the game state is a losing state
         """
-        value, action = self.scoreGameState(gameState, 0, self.depth)
+        value, action = self.scoreGameState(gameState, 0, self.depth * gameState.getNumAgents())
         return action
 
     def scoreGameState(self, gameState, player, depth):
@@ -195,7 +195,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1)
                 if value < min:
                     min = value
-                    best_action = action
             ret_val = min
 
         return ret_val, best_action
@@ -225,8 +224,39 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         All ghosts should be modeled as choosing uniformly at random from their
         legal moves.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        value, action = self.scoreGameState(gameState, 0, self.depth * gameState.getNumAgents())
+        return action
+
+    def scoreGameState(self, gameState, player, depth):
+        """
+        Returns the minimax score given a gamestate, a start player, and an initial depth
+        """
+
+        # Evaluates if it reached an end state or went through max depth
+        if gameState.isWin() or gameState.isLose() or depth == 0:
+            return self.evaluationFunction(gameState), None
+
+        ret_val = 0
+        best_action = None
+        if player == 0:  # Searches for the max state
+            max = -9999999
+
+            for action in gameState.getLegalActions():
+                value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1)
+                if value > max:
+                    max = value
+                    best_action = action
+            ret_val = max
+        else:  # Searches for the min state
+            score = 0
+            actions = 0
+            for action in gameState.getLegalActions(player):
+                value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1)
+                score += value
+                actions += 1
+            ret_val = score / actions
+
+        return ret_val, best_action
 
 def betterEvaluationFunction(currentGameState):
     """
