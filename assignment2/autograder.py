@@ -15,6 +15,7 @@
 # imports from python standard library
 import grading
 import importlib as imp
+import importlib.util as utils
 import types
 import optparse
 import os
@@ -139,8 +140,8 @@ def loadModuleString(moduleSource):
 
 def loadModuleFile(moduleName, filePath):
     loader = imp.machinery.SourceFileLoader(moduleName, filePath)
-    spec = imp.util.spec_from_loader(loader.name, loader)
-    mod = imp.util.module_from_spec(spec)
+    spec = utils.spec_from_loader(loader.name, loader)
+    mod = utils.module_from_spec(spec)
     loader.exec_module(mod)
     return mod
 

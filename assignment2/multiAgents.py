@@ -42,6 +42,8 @@ class ReflexAgent(Agent):
         legalMoves = gameState.getLegalActions()
 
         # Choose one of the best actions
+        print("scoringggg")
+        print()
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
@@ -68,8 +70,10 @@ class ReflexAgent(Agent):
         """
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
+        curPos = currentGameState.getPacmanPosition()
         newPos = successorGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
+        curFood = currentGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
@@ -77,28 +81,32 @@ class ReflexAgent(Agent):
 
         score = 0
         for i in range(len(ghostPositions)):
-            ghostDist = manhattanDistance(newPos, ghostPositions[i])
-            if newScaredTimes[i] > ghostDist * 1.5 and newScaredTimes[i] != 0:
-                score += 5 * newScaredTimes[i] * (newScaredTimes[i] - ghostDist)
-            elif ghostDist != 0:
-                score -= 200 / ghostDist
+            ghostNewDist = manhattanDistance(newPos, ghostPositions[i])
+            if newScaredTimes[i] > ghostNewDist * 1.5 and newScaredTimes[i] != 0:
+                score += 10 * newScaredTimes[i] * (newScaredTimes[i] - ghostNewDist)
+            elif ghostNewDist != 0:
+                print("ghost dist ", ghostNewDist)
+                score -= 50 / ghostNewDist
+            elif ghostNewDist == 0: # dont have it move on top of ghost
+                score -= 5000
 
-        if newFood[newPos[0]][newPos[1]]:
-            score += 150
+        new_closest_food = [-1, -1]
+        new_closest_dist = 9999999
 
-        closest_food = [-1, -1]
-        closest_dist = 9999999
-        for i in range(newFood.width - 1):
-            for j in range(newFood.height - 1):
-                if newFood[i][j] and manhattanDistance(newPos, (i, j)) < closest_dist:
-                    closest_dist = manhattanDistance(newPos, (i, j))
-                    closest_food = [i, j]
+        for i in range(newFood.width):
+            for j in range(newFood.height):
 
-        # if closest_dist == 0:
-        #     score += 150
-        # else:
-        #     score += 100 / closest_dist
-        print(closest_dist, closest_food)
+
+                if curFood[i][j] and manhattanDistance(newPos, (i, j)) < new_closest_dist:
+                    new_closest_dist = manhattanDistance(newPos, (i, j))
+                    new_closest_food = [i, j]
+
+        if new_closest_dist == 0:
+            score += 30
+        else:
+            score += 20 / new_closest_dist
+
+        print("new score: ", score, " close dist ", new_closest_dist, " food", new_closest_food, "pacman", newPos)
 
         return score
 
