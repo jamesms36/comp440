@@ -14,7 +14,7 @@
 
 from util import manhattanDistance
 from game import Directions
-import random, util
+import random, util, math
 
 from game import Agent
 
@@ -201,10 +201,41 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
     def getAction(self, gameState):
         """
-        Returns the minimax action using self.depth and self.evaluationFunction
+        Returns the minimax action from the current gameState using self.depth
+        and self.evaluationFunction.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        value, action = self.scoreGameState(gameState, 0, self.depth * gameState.getNumAgents())
+        return action
+
+
+    def scoreGameState(self, gameState, player, depth, alpha= -9999999, beta= 9999999):
+        """
+        Returns the minimax score given a gamestate, a start player, and an initial depth
+        """
+
+        # Evaluates if it reached an end state or went through max depth
+        if gameState.isWin() or gameState.isLose() or depth == 0:
+            return self.evaluationFunction(gameState), None
+
+        best_action = None
+        if player == 0:  # Searches for the max state
+            for action in gameState.getLegalActions():
+                value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1, alpha, beta)
+                if value > alpha:
+                    alpha = value
+                    best_action = action
+                if alpha >= beta:
+                    return beta, best_action
+            return alpha, best_action
+        else:  # Searches for the min state
+            for action in gameState.getLegalActions(player):
+                value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1, alpha, beta)
+                if value < beta:
+                    beta = value
+                if beta <= alpha:
+                    return alpha, None
+            return beta, None
+
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
