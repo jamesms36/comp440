@@ -222,25 +222,30 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         # Evaluates if it reached an end state or went through max depth
         if gameState.isWin() or gameState.isLose() or depth == 0:
             return self.evaluationFunction(gameState), None
-
-        best_action = None
+        min_val = -9999999
+        max_val = 9999999
+        move = None
         if player == 0:  # Searches for the max state
             for action in gameState.getLegalActions():
                 value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1, alpha, beta)
-                if value > alpha:
-                    alpha = value
-                    best_action = action
-                if alpha >= beta:
-                    return beta, best_action
-            return alpha, best_action
+                if value > min_val:
+                    min_val = value
+                    move = action
+                    alpha = max(alpha, min_val)
+                if min_val >= beta:
+                    return min_val, move
+            return min_val, move
+
         else:  # Searches for the min state
             for action in gameState.getLegalActions(player):
                 value, temp = self.scoreGameState(gameState.generateSuccessor(player, action), (player + 1) % gameState.getNumAgents(), depth - 1, alpha, beta)
-                if value < beta:
-                    beta = value
-                if beta <= alpha:
-                    return alpha, None
-            return beta, None
+                if value < max_val:
+                    max_val = value
+                    move = action
+                    beta = min(beta, max_val)
+                if max_val <= alpha:
+                    return max_val, move
+            return max_val, move
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
