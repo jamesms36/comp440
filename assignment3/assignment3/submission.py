@@ -225,20 +225,90 @@ class BlackjackMDP(util.MDP):
         #   Prob: probability that we got this card
         #   Reward: does not change
         if action == 'Take':
-            return 0
+            tups = []
+
+            # If it did not peek last turn
+            if state[1] is None:
+                if state[2] is not None:  # Don't let it pick a card if none are available
+                    for i in range(len(state[2])):
+                        if state[2][i] > 0:
+                            # Find the probability the card is chosen
+                            cards_left = sum(state[2])
+
+                            prob = state[2][i] / cards_left
+                            reward = 0
+
+                            # Set what the new deck and state will be
+                            new_cards = list(state[2])
+                            new_cards[i] -= 1
+                            new_state = [state[0] + self.cardValues[i], None, tuple(new_cards)]
+
+                            if new_state[0] > self.threshold:
+                                new_state[2] = None
+
+                            if cards_left == 1:
+                                new_state[2] = None
+                                reward = new_state[0] if new_state[0] <= self.threshold else 0
+
+                            # Add this possibility
+                            tups.append((tuple(new_state), prob, reward))
+            # If it peeked last turn, we know what the card will be
+            else:
+                cards_left = sum(state[2])
+
+                prob = 1
+                reward = 0
+
+                new_cards = list(state[2])
+                new_cards[state[1]] -= 1
+                new_state = [state[0] + self.cardValues[state[1]], None, tuple(new_cards)]
+
+                if new_state[0] > self.threshold:
+                    new_state[2] = None
+
+                if cards_left == 1:
+                    new_state[2] = None
+                    reward = new_state[0] if new_state[0] <= self.threshold else 0
+
+                tups.append((tuple(new_state), prob, reward))
+
+            return tups
         # Peeks (only do if peekIndex is None):
         #   State: update peekIndex to be index
         #   Prob: probability we get that index
         #   Reward: decrease by peekcost
         elif action == 'Peek':
-            return 0
+            if state[1] is not None:  # Cannot peek twice in a row
+                return []
+
+            tups = []
+
+            if state[2] is not None:  # Don't let it pick a card if none are available
+                for i in range(len(state[2])):
+                    if state[2][i] > 0:
+                        # Find the probability the card is chosen
+                        cards_left = sum(state[2])
+                        prob = state[2][i] / cards_left
+
+                        # Set what the new state will be
+                        new_state = (state[0], i, state[2])
+
+                        # Add this possibility
+                        tups.append((new_state, prob, -1 * self.peekCost))
+
+            return tups
         # Quits:
-        #   State: make the deckCardCounts into None
+        #   State: make the deckCardCounts into None if there are any remaining
         #   Prob: 1
         #   Reward: cardValues
         elif action == 'Quit':
-            state[2] = None
-            return state, 1, self.cardValues
+            tups = []
+
+            if state[2] is not None:
+                new_state = (state[0], state[1], None)
+                tups.append((new_state, 1, state[0]))
+                
+            return tups
 
     def discount(self):
         return 1

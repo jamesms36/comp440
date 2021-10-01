@@ -39,22 +39,9 @@
             'seconds': 0},
            {'maxPoints': 15,
             'maxSeconds': 1,
-            'messages': ["Exception thrown: <class 'Exception'> -- Not "
-                         'implemented yet',
-                         '  File "D:\\Users\\jjode\\Documents\\JJ\'s '
-                         'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
-                         'with '
-                         'James\\comp440\\assignment3\\assignment3\\grader.py", '
-                         'line 116, in test2a\n'
-                         '    mdp.succAndProbReward(state, action)):\n',
-                         '  File "D:\\Users\\jjode\\Documents\\JJ\'s '
-                         'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
-                         'with '
-                         'James\\comp440\\assignment3\\assignment3\\submission.py", '
-                         'line 223, in succAndProbReward\n'
-                         '    raise Exception("Not implemented yet")\n'],
+            'messages': [],
             'name': '4.2.1',
-            'points': 0,
+            'points': 15,
             'seconds': 0},
            {'maxPoints': 5,
             'maxSeconds': 1,
@@ -70,9 +57,9 @@
                          'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
                          'with '
                          'James\\comp440\\assignment3\\assignment3\\submission.py", '
-                         'line 238, in peekingMDP\n'
+                         'line 325, in peekingMDP\n'
                          '    raise Exception("Not implemented yet")\n'],
             'name': '4.2.2',
             'points': 0,
             'seconds': 0}],
- 'totalPoints': 45}
+ 'totalPoints': 60}
