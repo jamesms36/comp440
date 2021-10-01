@@ -45,21 +45,8 @@
             'seconds': 0},
            {'maxPoints': 5,
             'maxSeconds': 1,
-            'messages': ["Exception thrown: <class 'Exception'> -- Not "
-                         'implemented yet',
-                         '  File "D:\\Users\\jjode\\Documents\\JJ\'s '
-                         'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
-                         'with '
-                         'James\\comp440\\assignment3\\assignment3\\grader.py", '
-                         'line 121, in test2b\n'
-                         '    mdp = submission.peekingMDP()\n',
-                         '  File "D:\\Users\\jjode\\Documents\\JJ\'s '
-                         'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
-                         'with '
-                         'James\\comp440\\assignment3\\assignment3\\submission.py", '
-                         'line 325, in peekingMDP\n'
-                         '    raise Exception("Not implemented yet")\n'],
+            'messages': [],
             'name': '4.2.2',
-            'points': 0,
+            'points': 5,
             'seconds': 0}],
- 'totalPoints': 60}
+ 'totalPoints': 65}

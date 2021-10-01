@@ -95,9 +95,7 @@ class PolicyIteration(util.MDPAlgorithm):
                 V[s] = new_val
                 if abs(old_val - new_val) > epsilon:
                     converged = False
-
             pi = computeOptimalPolicy(mdp, V)
-
 
         self.pi = pi
         self.V = V
@@ -254,24 +252,24 @@ class BlackjackMDP(util.MDP):
                             tups.append((tuple(new_state), prob, reward))
             # If it peeked last turn, we know what the card will be
             else:
-                cards_left = sum(state[2])
+                if state[2] is not None:  # Don't let it pick a card if none are available
+                    cards_left = sum(state[2])
 
-                prob = 1
-                reward = 0
+                    prob = 1
+                    reward = 0
 
-                new_cards = list(state[2])
-                new_cards[state[1]] -= 1
-                new_state = [state[0] + self.cardValues[state[1]], None, tuple(new_cards)]
+                    new_cards = list(state[2])
+                    new_cards[state[1]] -= 1
+                    new_state = [state[0] + self.cardValues[state[1]], None, tuple(new_cards)]
 
-                if new_state[0] > self.threshold:
-                    new_state[2] = None
+                    if new_state[0] > self.threshold:
+                        new_state[2] = None
 
-                if cards_left == 1:
-                    new_state[2] = None
-                    reward = new_state[0] if new_state[0] <= self.threshold else 0
+                    if cards_left == 1:
+                        new_state[2] = None
+                        reward = new_state[0] if new_state[0] <= self.threshold else 0
 
-                tups.append((tuple(new_state), prob, reward))
-
+                    tups.append((tuple(new_state), prob, reward))
             return tups
         # Peeks (only do if peekIndex is None):
         #   State: update peekIndex to be index
@@ -282,7 +280,6 @@ class BlackjackMDP(util.MDP):
                 return []
 
             tups = []
-
             if state[2] is not None:  # Don't let it pick a card if none are available
                 for i in range(len(state[2])):
                     if state[2][i] > 0:
@@ -292,10 +289,8 @@ class BlackjackMDP(util.MDP):
 
                         # Set what the new state will be
                         new_state = (state[0], i, state[2])
-
                         # Add this possibility
                         tups.append((new_state, prob, -1 * self.peekCost))
-
             return tups
         # Quits:
         #   State: make the deckCardCounts into None if there are any remaining
@@ -307,7 +302,7 @@ class BlackjackMDP(util.MDP):
             if state[2] is not None:
                 new_state = (state[0], state[1], None)
                 tups.append((new_state, 1, state[0]))
-                
+
             return tups
 
     def discount(self):
@@ -322,6 +317,6 @@ def peekingMDP():
     least 10% of the time.
     """
     # BEGIN_YOUR_CODE (around 2 lines of code expected)
-    raise Exception("Not implemented yet")
-    # END_YOUR_CODE
+    return BlackjackMDP((1, 2, 3, 4, 21), 3, 20, 1)
 
+                                                           
