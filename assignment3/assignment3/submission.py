@@ -84,6 +84,38 @@ class PolicyIteration(util.MDPAlgorithm):
 
         pi = computeOptimalPolicy(mdp, V)
 
+        converged = False
+        while not converged:
+
+            # Computes all the values on the graph
+            converged = True
+            for s in mdp.states:
+                old_val = V[s]
+                new_val = computeQ(mdp, V, s, pi[s])
+                V[s] = new_val
+                if abs(old_val - new_val) > epsilon:
+                    converged = False
+
+            pi = computeOptimalPolicy(mdp, V)
+
+
+        self.pi = pi
+        self.V = V
+
+############################################################
+# Problem 4.1.5
+
+class ValueIteration(util.MDPAlgorithm):
+    def solve(self, mdp, epsilon=0.001):
+        mdp.computeStates()
+
+        V = {}
+        for state in mdp.states:
+            V[state] = 0
+            actions = mdp.actions(state)
+
+        pi = computeOptimalPolicy(mdp, V)
+
         while True:
             V = policyEvaluation(mdp, V, pi, epsilon)
             newPi = computeOptimalPolicy(mdp, V)
@@ -99,18 +131,6 @@ class PolicyIteration(util.MDPAlgorithm):
 
             pi = dict.copy(newPi)
 
-        self.pi = pi
-        self.V = V
-
-############################################################
-# Problem 4.1.5
-
-class ValueIteration(util.MDPAlgorithm):
-    def solve(self, mdp, epsilon=0.001):
-        mdp.computeStates()
-        # BEGIN_YOUR_CODE (around 10 lines of code expected)
-        raise Exception("Not implemented yet")
-        # END_YOUR_CODE
         self.pi = pi
         self.V = V
 
@@ -199,9 +219,26 @@ class BlackjackMDP(util.MDP):
     # * When the probability is 0 for a transition to a particular new state,
     #   don't include that state in the list returned by succAndProbReward.
     def succAndProbReward(self, state, action):
-        # BEGIN_YOUR_CODE (around 50 lines of code expected)
-        raise Exception("Not implemented yet")
-        # END_YOUR_CODE
+
+        # Takes card:
+        #   State: update deckCardCounts, set peekIndex to None, update total card values
+        #   Prob: probability that we got this card
+        #   Reward: does not change
+        if action == 'Take':
+            return 0
+        # Peeks (only do if peekIndex is None):
+        #   State: update peekIndex to be index
+        #   Prob: probability we get that index
+        #   Reward: decrease by peekcost
+        elif action == 'Peek':
+            return 0
+        # Quits:
+        #   State: make the deckCardCounts into None
+        #   Prob: 1
+        #   Reward: cardValues
+        elif action == 'Quit':
+            state[2] = None
+            return state, 1, self.cardValues
 
     def discount(self):
         return 1
