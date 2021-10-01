@@ -177,13 +177,19 @@ class CounterexampleMDP(util.MDP):
         return 1
         # END_YOUR_CODE
 
+    def computeStates(self):
+        self.states = [0,1,2]
+
 def counterexampleAlpha():
     # BEGIN_YOUR_CODE (around 1 line of code expected)
     return 1000
     # END_YOUR_CODE
 
 def runCounterexample():
-    
+    test = ValueIteration()
+    test.solve(CounterexampleMDP, 0.001)
+    print(test.V)
+
 
 ############################################################
 # Problem 4.2.1
@@ -265,3 +271,4 @@ def peekingMDP():
     raise Exception("Not implemented yet")
     # END_YOUR_CODE
 
+runCounterexample()
