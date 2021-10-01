@@ -15,19 +15,9 @@
             'seconds': 0},
            {'maxPoints': 15,
             'maxSeconds': 1,
-            'messages': ['Expected to be < 0.001000, but got 24.299913',
-                         'Expected to be < 0.001000, but got 22.720413',
-                         'Expected to be < 0.001000, but got 21.461217',
-                         'Expected to be < 0.001000, but got 22.333962',
-                         'Expected to be < 0.001000, but got 19.756732',
-                         'Expected to be < 0.001000, but got 18.220676',
-                         'Expected to be < 0.001000, but got 15.350597',
-                         'Expected to be < 0.001000, but got 12.514337',
-                         'Expected to be < 0.001000, but got 9.593591',
-                         'Expected to be < 0.001000, but got 6.540531',
-                         'Expected to be < 0.001000, but got 3.342874'],
+            'messages': [],
             'name': '4.1.2',
-            'points': 0,
+            'points': 15,
             'seconds': 0},
            {'maxPoints': 5,
             'maxSeconds': 1,
@@ -37,30 +27,9 @@
             'seconds': 0},
            {'maxPoints': 10,
             'maxSeconds': 1,
-            'messages': ["Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 3.525004',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 1.377788',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 6.077393',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 10.536184',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 14.709566',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 18.544685',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 21.978901',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 24.937971',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 27.333906',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 29.062422',
-                         "Expected '1', but got '-1'",
-                         'Expected to be < 0.001000, but got 29.999922'],
+            'messages': [],
             'name': '4.1.4',
-            'points': 0,
+            'points': 10,
             'seconds': 0},
            {'maxPoints': 10,
             'maxSeconds': 1,
@@ -82,7 +51,7 @@
                          'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
                          'with '
                          'James\\comp440\\assignment3\\assignment3\\submission.py", '
-                         'line 110, in solve\n'
+                         'line 113, in solve\n'
                          '    raise Exception("Not implemented yet")\n'],
             'name': '4.1.5',
             'points': 0,
@@ -101,7 +70,7 @@
                          'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
                          'with '
                          'James\\comp440\\assignment3\\assignment3\\submission.py", '
-                         'line 201, in succAndProbReward\n'
+                         'line 204, in succAndProbReward\n'
                          '    raise Exception("Not implemented yet")\n'],
             'name': '4.2.1',
             'points': 0,
@@ -120,9 +89,9 @@
                          'Folder\\Rice\\Senior\\Comp 440\\Assignments\\Work '
                          'with '
                          'James\\comp440\\assignment3\\assignment3\\submission.py", '
-                         'line 216, in peekingMDP\n'
+                         'line 219, in peekingMDP\n'
                          '    raise Exception("Not implemented yet")\n'],
             'name': '4.2.2',
             'points': 0,
             'seconds': 0}],
- 'totalPoints': 10}
+ 'totalPoints': 35}

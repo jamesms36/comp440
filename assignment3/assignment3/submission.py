@@ -36,14 +36,14 @@ def policyEvaluation(mdp, V, pi, epsilon=0.001):
         for s in mdp.states:
             new_val = computeQ(mdp, V, s, pi[s])
             V_new[s] = new_val
-            node_diff = V_new[s] - V[s]
+            node_diff = abs(V_new[s] - V[s])
             if node_diff > max_diff:
                 max_diff = node_diff
 
         # Compares the new graph to the old graph
-        V = V_new
+        V = dict.copy(V_new)
         diff = max_diff
-        print(max_diff)
+
     return V_new
 
 
@@ -84,20 +84,21 @@ class PolicyIteration(util.MDPAlgorithm):
 
         pi = computeOptimalPolicy(mdp, V)
 
-        # while True:
-        #     V = policyEvaluation(mdp, V, pi, epsilon)
-        #     newPi = computeOptimalPolicy(mdp, V)
-        #
-        #     allSame = True
-        #     for state in mdp.states:
-        #         if newPi[state] != pi[state]:
-        #             allSame = False
-        #             break
-        #
-        #     if allSame:
-        #         break
+        while True:
+            V = policyEvaluation(mdp, V, pi, epsilon)
+            newPi = computeOptimalPolicy(mdp, V)
 
-        # END_YOUR_CODE
+            allSame = True
+            for state in mdp.states:
+                if newPi[state] != pi[state]:
+                    allSame = False
+                    break
+
+            if allSame:
+                break
+
+            pi = dict.copy(newPi)
+
         self.pi = pi
         self.V = V
 
