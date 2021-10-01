@@ -26,27 +26,24 @@ def policyEvaluation(mdp, V, pi, epsilon=0.001):
     Initialize the computation with |V|.  Note that |V| and |pi| are
     dictionaries.
     """
-    V_old = dict.copy(V)
+    # V_old = V
     V_new = {}
     diff = 1000000
-    if len(V_old.keys())==0: return V_old
+
     while (diff > epsilon):
         # Computes all the values on the graph
-        print("got this far")
         max_diff = 0
-        print(V_old.keys())
-        for s in V_old.keys():
-            print("test")
-            new_val = computeQ(mdp, V_old, s, pi[s])
-            print("so far so good")
+        for s in mdp.states:
+            new_val = computeQ(mdp, V, s, pi[s])
             V_new[s] = new_val
-            node_diff = V_new[s] - V_old[s]
+            node_diff = V_new[s] - V[s]
             if node_diff > max_diff:
                 max_diff = node_diff
 
         # Compares the new graph to the old graph
-        V_old = V_new
+        V = V_new
         diff = max_diff
+        print(max_diff)
     return V_new
 
 
@@ -87,18 +84,18 @@ class PolicyIteration(util.MDPAlgorithm):
 
         pi = computeOptimalPolicy(mdp, V)
 
-        while True:
-            V = policyEvaluation(mdp, V, pi, epsilon)
-            newPi = computeOptimalPolicy(mdp, V)
-
-            allSame = True
-            for state in mdp.states:
-                if newPi[state] != pi[state]:
-                    allSame = False
-                    break
-
-            if allSame:
-                break
+        # while True:
+        #     V = policyEvaluation(mdp, V, pi, epsilon)
+        #     newPi = computeOptimalPolicy(mdp, V)
+        #
+        #     allSame = True
+        #     for state in mdp.states:
+        #         if newPi[state] != pi[state]:
+        #             allSame = False
+        #             break
+        #
+        #     if allSame:
+        #         break
 
         # END_YOUR_CODE
         self.pi = pi
