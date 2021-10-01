@@ -140,38 +140,60 @@ class ValueIteration(util.MDPAlgorithm):
 # counterexample by filling out this class and returning an alpha value in
 # counterexampleAlpha().
 class CounterexampleMDP(util.MDP):
-    def __init__(self):
+    def __init__(self, alpha=0):
         # BEGIN_YOUR_CODE (around 1 line of code expected)
-        raise Exception("Not implemented yet")
+        self.alpha = alpha
         # END_YOUR_CODE
 
     def startState(self):
         # BEGIN_YOUR_CODE (around 1 line of code expected)
-        raise Exception("Not implemented yet")
+        return 0
         # END_YOUR_CODE
 
     # Return set of actions possible from |state|.
     def actions(self, state):
         # BEGIN_YOUR_CODE (around 1 line of code expected)
-        raise Exception("Not implemented yet")
+        if state==0:
+            return [1,2]
+        else:
+            return []
         # END_YOUR_CODE
 
     # Return a list of (newState, prob, reward) tuples corresponding to edges
     # coming out of |state|.
     def succAndProbReward(self, state, action):
         # BEGIN_YOUR_CODE (around 1 line of code expected)
-        raise Exception("Not implemented yet")
+        if state == 0:
+            return [(1, (0.01+self.alpha)/(1+2*self.alpha), 100),
+                    (2, (0.99+self.alpha)/(1+2*self.alpha), 10)]
+        else:
+            return []
         # END_YOUR_CODE
 
     def discount(self):
         # BEGIN_YOUR_CODE (around 1 line of code expected)
-        raise Exception("Not implemented yet")
+        return 1
         # END_YOUR_CODE
+
+    #def computeStates(self):
+    #    self.states = [0,1,2]
 
 def counterexampleAlpha():
     # BEGIN_YOUR_CODE (around 1 line of code expected)
-    raise Exception("Not implemented yet")
+    return 1000
     # END_YOUR_CODE
+
+def runCounterexample():
+    mdp = CounterexampleMDP()
+    mdp_alpha = CounterexampleMDP(counterexampleAlpha())
+    V1 = ValueIteration()
+    V1.solve(mdp, 0.001)
+    V2 = ValueIteration()
+    V2.solve(mdp_alpha, 0.001)
+    print("V1:", V1.V)
+    print("V2:", V2.V)
+    print("Note that V1(s0) < V2(s0) when alpha =", counterexampleAlpha())
+
 
 ############################################################
 # Problem 4.2.1
@@ -319,4 +341,4 @@ def peekingMDP():
     # BEGIN_YOUR_CODE (around 2 lines of code expected)
     return BlackjackMDP((1, 2, 3, 4, 21), 3, 20, 1)
 
-                                                           
+runCounterexample()
