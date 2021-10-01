@@ -11,8 +11,11 @@ def computeQ(mdp, V, state, action):
     documentation).  Note that |V| is a dictionary.  
     """
     # BEGIN_YOUR_CODE (around 2 lines of code expected)
-    raise Exception("Not implemented yet")
-    # END_YOUR_CODE
+    val = 0
+    discount = mdp.discount()
+    for tup in mdp.succAndProbReward(state, action):
+        val += tup[1] * (tup[2] + discount * V[state])
+    return val
 
 ############################################################
 # Problem 4.1.2
