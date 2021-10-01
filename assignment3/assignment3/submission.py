@@ -14,7 +14,7 @@ def computeQ(mdp, V, state, action):
     val = 0
     discount = mdp.discount()
     for tup in mdp.succAndProbReward(state, action):
-        val += tup[1] * (tup[2] + discount * V[state])
+        val += tup[1] * (tup[2] + discount * V[tup[0]])
     return val
 
 ############################################################
@@ -27,8 +27,30 @@ def policyEvaluation(mdp, V, pi, epsilon=0.001):
     dictionaries.
     """
     # BEGIN_YOUR_CODE (around 7 lines of code expected)
-    raise Exception("Not implemented yet")
-    # END_YOUR_CODE
+    V_old = dict.copy(V)
+    V_new = {}
+    diff = 1000000
+    if len(V_old.keys())==0: return V_old
+    while (diff > epsilon):
+        # Computes all the values on the graph
+        print("got this far")
+        max_diff = 0
+        print(V_old.keys())
+        for s in V_old.keys():
+            print("test")
+            new_val = computeQ(mdp, V_old, s, pi[s])
+            print("so far so good")
+            V_new[s] = new_val
+            node_diff = V_new[s] - V_old[s]
+            if node_diff > max_diff:
+                max_diff = node_diff
+
+        # Compares the new graph to the old graph
+        V_old = V_new
+        diff = max_diff
+    return V_new
+
+
 
 ############################################################
 # Problem 4.1.3
