@@ -59,7 +59,7 @@ class BacktrackingSearch():
         # Keep track of the number of times backtrack() gets called.
         self.numOperations = 0
 
-        # Keey track of the number of operations to get to the very first successful
+        # Keep track of the number of operations to get to the very first successful
         # assignment (doesn't have to be optimal).
         self.firstAssignmentNumOperations = 0
 
@@ -198,9 +198,20 @@ class BacktrackingSearch():
             # Problem 3.1d
             # When arc consistency check is enabled.
             # BEGIN_YOUR_CODE (around 10-15 lines of code expected)
-
-            raise Exception("Not implemented yet")
-
+            for val in ordered_values:
+                deltaWeight = self.get_delta_weight(assignment, var, val)
+                if deltaWeight > 0:
+                    assignment[var] = val
+                    # store the current domains of all variables
+                    old_domains = copy.deepcopy(self.domains)
+                    # enforce arc consistency
+                    self.domains[var] = [val]
+                    if self.arc_consistency_check(var):
+                        # If this assignment is arc consistent, it recursively runs backtrach
+                        self.backtrack(assignment, numAssigned + 1, weight * deltaWeight)
+                    # When backtracking back up, reset the domains to what they were before the assignment
+                    self.domains = copy.deepcopy(old_domains)
+                    assignment[var] = None
             # END_YOUR_CODE
 
     def get_unassigned_variable(self, assignment):
@@ -286,7 +297,34 @@ class BacktrackingSearch():
             sorted_list = [key for key,val in sorted_dict]
             return sorted_list
             # END_YOUR_CODE
-   
+
+    # New helper function added
+    def arc_enforse(self, var, nbr):
+        """
+        Enforces arc consistency between var and nbr. Will update the domain of nbr if there are any values that are not arc consistent
+        :param var: X_i variable
+        :param nbr: Neighbor of X_i that is being checked
+        :return: True if domain of nbr is updated, and will update self.domains to reflect this new domain. Returns false otherwise
+        """
+        tempDomains = copy.deepcopy(self.domains)
+        # New domain of nbr
+        new_domain = []
+        # For all values in domain of var and nbr
+        for val_i in tempDomains[var]:
+            for val_j in tempDomains[nbr]:
+                # Checks to see if these two values are consistent, and if so, adds val_j to domain of nbr
+                if self.csp.binaryPotentials[var][nbr][val_i][val_j] != 0:
+                    # adds it to the domain if it isn't already there
+                    if new_domain.count(val_j) == 0:
+                        new_domain.append(val_j)
+        # If the domain changes, update it
+        if len(tempDomains[nbr]) != len(new_domain):
+            tempDomains[nbr] = new_domain
+            self.domains = tempDomains
+            return True
+        # Returns false if there's no update to domain
+        return False
+
     def arc_consistency_check(self, var):
         """
         Perform the AC-3 algorithm. The goal is to reduce the size of the
@@ -327,8 +365,22 @@ class BacktrackingSearch():
         """
         # Problem 3.1d
         # BEGIN_YOUR_CODE (around 15-20 lines of code expected)
+        queue = [var]
+        while len(queue) != 0:
+            xi = queue.pop(0)
+            # If there are no remaining consistent assignments for a variable, return False
+            if len(self.domains[xi]) == 0:
+                return False
+            # Iterates through all neighbors of xi
+            for nbr in range(len(self.domains)):
+                if xi != nbr:
+                    if self.arc_enforse(xi, nbr):
+                        # Adds the neighbor to the queue if the neighbor's domain is updated
+                        queue.append(nbr)
+        # Returns true if arc consistent
+        return True
 
-        raise Exception("Not implemented yet")
+
 
         # END_YOUR_CODE
 
@@ -375,7 +427,6 @@ def get_sum_variable(csp, name, variables, maxSum):
     for i in range(num_add-1):
         csp.add_binary_potential((name, 'sum', i), (name, 'sum', i+1), lambda x, y: x[1] == y[0])
     return (name, 'final sum')
-
     # END_YOUR_CODE
 
 ############################################################
