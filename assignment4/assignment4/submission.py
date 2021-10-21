@@ -221,7 +221,21 @@ class BacktrackingSearch():
             # Heuristic: most constrained variable (MCV)
             # Select a variable with the least number of remaining domain values.
             # BEGIN_YOUR_CODE (around 5 lines of code expected)
-            raise Exception("Not implemented yet")
+            for var in range(len(assignment)):
+                if assignment[var] is None:
+                    mc_var = var
+                    break
+            mc_num = 10000000
+            for var in range(len(assignment)):
+                if assignment[var] is None:
+                    count = 0
+                    for val in (self.domains[var]):
+                        if self.get_delta_weight(assignment, var, val) != 0:
+                            count = count + 1
+                    if count < mc_num:
+                        mc_num = count
+                        mc_var = var
+            return mc_var
             # END_YOUR_CODE
 
     def get_ordered_values(self, assignment, var):
