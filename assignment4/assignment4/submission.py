@@ -221,6 +221,8 @@ class BacktrackingSearch():
             # Heuristic: most constrained variable (MCV)
             # Select a variable with the least number of remaining domain values.
             # BEGIN_YOUR_CODE (around 5 lines of code expected)
+
+            # Assigns intitial var to return
             for var in range(len(assignment)):
                 if assignment[var] is None:
                     mc_var = var
@@ -230,8 +232,10 @@ class BacktrackingSearch():
                 if assignment[var] is None:
                     count = 0
                     for val in (self.domains[var]):
+                        # counts the number of value assignments that are consistent
                         if self.get_delta_weight(assignment, var, val) != 0:
                             count = count + 1
+                    # returns the variable with the least number of consistent value assignments
                     if count < mc_num:
                         mc_num = count
                         mc_var = var
@@ -262,7 +266,23 @@ class BacktrackingSearch():
             # constraints imposed on unassigned neighboring variables.
             # BEGIN_YOUR_CODE (around 12 lines of code expected)
             # Will update the domains! The unary constraint on var, val was already checked by backtrack before calling this method
-            raise Exception("Not implemented yet")
+            lcv_map = {}
+            # Selects Xk to be it's neighbor to the left
+            xk = (var - 1) % len(assignment)
+            for val_j in (self.domains[var]):
+                count = 0
+                # counts the number of possible assignments remaining of val_j with any value for xk
+                for val_k in (self.domains[xk]):
+                    # checks that the value val_k for Xk is already consistent, and that val_k for xk is consistent with val_j for var
+                    if (assignment[xk] != None or self.get_delta_weight(assignment, xk, val_k) != 0) and self.csp.binaryPotentials[var][xk][val_j][val_k] != 0:
+                        # If it is all consistent, then it counts it
+                        count = count + 1
+                lcv_map[val_j] = count
+            # sorts in descending order
+            sorted_dict = sorted(lcv_map.items(), key=lambda x:-x[1])
+            # returns just the keys of the sorted dictionary
+            sorted_list = [key for key,val in sorted_dict]
+            return sorted_list
             # END_YOUR_CODE
    
     def arc_consistency_check(self, var):
