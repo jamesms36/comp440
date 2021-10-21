@@ -37,7 +37,7 @@ parts:
     assignment4\\submission.py\", line 140, in solve\n    self.backtrack([None] *\
     \ self.csp.numVars, 0, 1)\n"
   - "  File \"C:\\Users\\jmssa\\OneDrive\\Documents\\Comp440\\comp440\\assignment4\\\
-    assignment4\\submission.py\", line 201, in backtrack\n    raise Exception(\"Not\
+    assignment4\\submission.py\", line 202, in backtrack\n    raise Exception(\"Not\
     \ implemented yet\")\n"
   name: 3.1d-0
   points: 0
@@ -52,22 +52,16 @@ parts:
     assignment4\\submission.py\", line 140, in solve\n    self.backtrack([None] *\
     \ self.csp.numVars, 0, 1)\n"
   - "  File \"C:\\Users\\jmssa\\OneDrive\\Documents\\Comp440\\comp440\\assignment4\\\
-    assignment4\\submission.py\", line 201, in backtrack\n    raise Exception(\"Not\
+    assignment4\\submission.py\", line 202, in backtrack\n    raise Exception(\"Not\
     \ implemented yet\")\n"
   name: 3.1d-1
   points: 0
   seconds: 0
 - maxPoints: 10
   maxSeconds: 1000000
-  messages:
-  - 'Exception thrown: <class ''Exception''> -- Not implemented yet'
-  - "  File \"grader.py\", line 93, in test32b_0\n    sumVar = submission.get_sum_variable(csp,\
-    \ 'sum-up-to-15', ['A', 'B', 'C'], 15)\n"
-  - "  File \"C:\\Users\\jmssa\\OneDrive\\Documents\\Comp440\\comp440\\assignment4\\\
-    assignment4\\submission.py\", line 355, in get_sum_variable\n    raise Exception(\"\
-    Not implemented yet\")\n"
+  messages: []
   name: 3.2b-0
-  points: 0
+  points: 10
   seconds: 0
 - maxPoints: 10
   maxSeconds: 1000000
@@ -75,7 +69,7 @@ parts:
   - 'Exception thrown: <class ''Exception''> -- Not implemented yet'
   - "  File \"grader.py\", line 183, in test33a_0\n    cspConstructor.add_semester_constraints(csp)\n"
   - "  File \"C:\\Users\\jmssa\\OneDrive\\Documents\\Comp440\\comp440\\assignment4\\\
-    assignment4\\submission.py\", line 431, in add_semester_constraints\n    raise\
+    assignment4\\submission.py\", line 454, in add_semester_constraints\n    raise\
     \ Exception(\"Not implemented yet\")\n"
   name: 3.3a-0
   points: 0
@@ -86,7 +80,7 @@ parts:
   - 'Exception thrown: <class ''Exception''> -- Not implemented yet'
   - "  File \"grader.py\", line 203, in test33b_0\n    cspConstructor.add_request_weights(csp)\n"
   - "  File \"C:\\Users\\jmssa\\OneDrive\\Documents\\Comp440\\comp440\\assignment4\\\
-    assignment4\\submission.py\", line 444, in add_request_weights\n    raise Exception(\"\
+    assignment4\\submission.py\", line 467, in add_request_weights\n    raise Exception(\"\
     Not implemented yet\")\n"
   name: 3.3b-0
   points: 0
@@ -97,7 +91,7 @@ parts:
   - 'Exception thrown: <class ''Exception''> -- Not implemented yet'
   - "  File \"grader.py\", line 224, in test33c_0\n    cspConstructor.add_prereq_constraints(csp)\n"
   - "  File \"C:\\Users\\jmssa\\OneDrive\\Documents\\Comp440\\comp440\\assignment4\\\
-    assignment4\\submission.py\", line 462, in add_prereq_constraints\n    raise Exception(\"\
+    assignment4\\submission.py\", line 485, in add_prereq_constraints\n    raise Exception(\"\
     Not implemented yet\")\n"
   name: 3.3c-0
   points: 0
@@ -108,7 +102,7 @@ parts:
   - 'Exception thrown: <class ''Exception''> -- Not implemented yet'
   - "  File \"grader.py\", line 244, in test33d_0\n    cspConstructor.add_credit_constraints(csp)\n"
   - "  File \"C:\\Users\\jmssa\\OneDrive\\Documents\\Comp440\\comp440\\assignment4\\\
-    assignment4\\submission.py\", line 495, in add_credit_constraints\n    raise Exception(\"\
+    assignment4\\submission.py\", line 518, in add_credit_constraints\n    raise Exception(\"\
     Not implemented yet\")\n"
   name: 3.3d-0
   points: 0
@@ -120,4 +114,4 @@ parts:
   name: profile.txt
   points: 0
   seconds: 0
-totalPoints: 25
+totalPoints: 35

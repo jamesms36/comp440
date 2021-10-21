@@ -198,7 +198,9 @@ class BacktrackingSearch():
             # Problem 3.1d
             # When arc consistency check is enabled.
             # BEGIN_YOUR_CODE (around 10-15 lines of code expected)
+
             raise Exception("Not implemented yet")
+
             # END_YOUR_CODE
 
     def get_unassigned_variable(self, assignment):
@@ -325,7 +327,9 @@ class BacktrackingSearch():
         """
         # Problem 3.1d
         # BEGIN_YOUR_CODE (around 15-20 lines of code expected)
+
         raise Exception("Not implemented yet")
+
         # END_YOUR_CODE
 
 ############################################################
@@ -352,7 +356,26 @@ def get_sum_variable(csp, name, variables, maxSum):
     """
 
     # BEGIN_YOUR_CODE (around 12-15 lines of code expected)
-    raise Exception("Not implemented yet")
+    domain = []
+    for i in range(maxSum+1):
+        for j in range(maxSum+1):
+            domain.append((i,j))
+    num_add = len(variables)
+    for i in range(num_add):
+        # Add the corresponding auxilary variable
+        csp.add_variable((name, 'sum', i), domain)
+        # Add the binary constraint between the original and new auxilary variable
+        csp.add_binary_potential((name, 'sum', i), variables[i], lambda x, y: x[1] == x[0] + y)
+    # First constraint
+    csp.add_unary_potential((name, 'sum', 0), lambda x: x[0] == 0)
+    # Add final constraint
+    csp.add_variable((name, 'final sum'), list(range(maxSum+1)))
+    csp.add_binary_potential((name, 'sum', num_add-1), (name, 'final sum'), lambda x, y: x[1] == y)
+    # Add linking constraints
+    for i in range(num_add-1):
+        csp.add_binary_potential((name, 'sum', i), (name, 'sum', i+1), lambda x, y: x[1] == y[0])
+    return (name, 'final sum')
+
     # END_YOUR_CODE
 
 ############################################################
