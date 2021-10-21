@@ -16,9 +16,17 @@ def create_nqueens_csp(n = 8):
         such that it can be solved by a weighted CSP solver.
     """
     csp = util.CSP()
-    # BEGIN_YOUR_CODE (around 7 lines of code expected)
-    raise Exception("Not implemented yet")
-    # END_YOUR_CODE
+    queens = list(range(1, n+1))
+    domain = list(range(1, n+1))
+    for q in queens:
+        csp.add_variable(q, domain)
+    for q1 in queens:
+        for q2 in queens:
+            # Row constraint
+            if q1 != q2:
+                csp.add_binary_potential(q1, q2, lambda x, y: x != y)
+            # Diagonal constraint
+            csp.add_binary_potential(q1, q2, lambda x, y: abs(x-y) != abs(q1-q2))
     return csp
 
 
