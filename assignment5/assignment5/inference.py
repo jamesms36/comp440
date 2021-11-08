@@ -495,8 +495,9 @@ class JointParticleFilter(ParticleFilter):
         be reinitialized by calling initializeUniformly. The total method of
         the DiscreteDistribution may be useful.
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        beliefs = self.getBeliefDistribution()
+        for i in range(self.numGhosts):
+            print("test")
 
     def elapseTime(self, gameState):
         """
