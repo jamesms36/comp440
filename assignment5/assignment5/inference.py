@@ -74,8 +74,11 @@ class DiscreteDistribution(dict):
         >>> empty
         {}
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        if(self.total()!=0):
+            denominator = self.total()
+            for i in self.keys():
+                self[i] = self[i]/denominator
+
 
     def sample(self):
         """
