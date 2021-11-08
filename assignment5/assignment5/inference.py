@@ -495,9 +495,20 @@ class JointParticleFilter(ParticleFilter):
         be reinitialized by calling initializeUniformly. The total method of
         the DiscreteDistribution may be useful.
         """
+
         beliefs = self.getBeliefDistribution()
-        for i in range(self.numGhosts):
-            print("test")
+        for ghost in range(self.numGhosts):
+                for i in beliefs:
+                    beliefs[i] = beliefs[i] * self.getObservationProb(observation[ghost], gameState.getPacmanPosition(),
+                                                                  i[ghost], self.getJailPosition(ghost))
+        if beliefs.total() == 0:
+            self.initializeUniformly(gameState)
+
+            beliefs = self.getBeliefDistribution()
+
+        for i in range(self.numParticles):
+            self.particles[i] = beliefs.sample()
+
 
     def elapseTime(self, gameState):
         """
@@ -509,10 +520,10 @@ class JointParticleFilter(ParticleFilter):
             newParticle = list(oldParticle)  # A list of ghost positions
 
             # now loop through and update each entry in newParticle...
-            "*** YOUR CODE HERE ***"
-            raiseNotDefined()
+            for ghost in range(self.numGhosts):
+                newPosDist = self.getPositionDistribution(gameState, list(oldParticle), ghost, self.ghostAgents[ghost])
+                newParticle[ghost] = newPosDist.sample()
 
-            """*** END YOUR CODE HERE ***"""
             newParticles.append(tuple(newParticle))
         self.particles = newParticles
 
