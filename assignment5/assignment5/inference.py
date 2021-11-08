@@ -300,10 +300,7 @@ class ExactInference(InferenceModule):
         for i in self.allPositions:
 
             self.beliefs[i] = self.beliefs[i]*self.getObservationProb(observation, gameState.getPacmanPosition(),
-                                                                      gameState.getGhostPosition(), self.getJailPosition())
-
-        raiseNotDefined()
-
+                                                                      i, self.getJailPosition())
         self.beliefs.normalize()
 
     def elapseTime(self, gameState):
@@ -315,8 +312,23 @@ class ExactInference(InferenceModule):
         Pacman's current position. However, this is not a problem, as Pacman's
         current position is known.
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        # newBeliefs = DiscreteDistribution()
+
+        newBeliefs = {}
+        for i in self.allPositions:
+            newBeliefs[i] = 0
+
+        for i in self.beliefs:
+            if self.beliefs[i] != 0:
+                newPosDist = self.getPositionDistribution(gameState, i)
+                for p in self.allPositions:
+                    newBeliefs[p] += newPosDist[p] * self.beliefs[i]
+
+        for i in newBeliefs:
+            self.beliefs[i] = newBeliefs[i]
+
+        self.beliefs.normalize()
 
     def getBeliefDistribution(self):
         return self.beliefs
@@ -342,8 +354,17 @@ class ParticleFilter(InferenceModule):
         self.particles for the list of particles.
         """
         self.particles = []
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        positions = len(self.legalPositions)
+
+        numToPos = {}
+        count = 0
+        for i in self.legalPositions:
+            numToPos[count] = i
+            count += 1
+
+        for i in range(self.numParticles):
+            self.particles.append(numToPos[i % positions])
+
 
     def observeUpdate(self, observation, gameState):
         """
@@ -376,8 +397,18 @@ class ParticleFilter(InferenceModule):
         
         This function should return a normalized distribution.
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        beliefs = DiscreteDistribution()
+        for i in self.particles:
+            if i in beliefs:
+                beliefs[i] += 1
+            else:
+                beliefs[i] = 1
+
+        for i in beliefs.keys():
+            beliefs[i] /= self.numParticles
+
+        return beliefs
 
 
 class JointParticleFilter(ParticleFilter):
