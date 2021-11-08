@@ -298,7 +298,6 @@ class ExactInference(InferenceModule):
         """
 
         for i in self.allPositions:
-
             self.beliefs[i] = self.beliefs[i]*self.getObservationProb(observation, gameState.getPacmanPosition(),
                                                                       i, self.getJailPosition())
         self.beliefs.normalize()
@@ -312,8 +311,6 @@ class ExactInference(InferenceModule):
         Pacman's current position. However, this is not a problem, as Pacman's
         current position is known.
         """
-
-        # newBeliefs = DiscreteDistribution()
 
         newBeliefs = {}
         for i in self.allPositions:
@@ -378,16 +375,45 @@ class ParticleFilter(InferenceModule):
         be reinitialized by calling initializeUniformly. The total method of
         the DiscreteDistribution may be useful.
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        beliefs = self.getBeliefDistribution()
+
+        for i in self.allPositions:
+            beliefs[i] = beliefs[i]*self.getObservationProb(observation, gameState.getPacmanPosition(),
+                                                                      i, self.getJailPosition())
+        if beliefs.total() == 0:
+            self.initializeUniformly(gameState)
+
+            beliefs = self.getBeliefDistribution()
+
+        for i in range(self.numParticles):
+            self.particles[i] = beliefs.sample()
+
 
     def elapseTime(self, gameState):
         """
         Sample each particle's next state based on its current state and the
         gameState.
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        beliefs = self.getBeliefDistribution()
+
+        newBeliefs = {}
+        for i in self.allPositions:
+            newBeliefs[i] = 0
+
+        for i in beliefs:
+            if beliefs[i] != 0:
+                newPosDist = self.getPositionDistribution(gameState, i)
+                for p in self.allPositions:
+                    newBeliefs[p] += newPosDist[p] * beliefs[i]
+
+        for i in newBeliefs:
+            beliefs[i] = newBeliefs[i]
+
+        for i in range(self.numParticles):
+            self.particles[i] = beliefs.sample()
+
 
     def getBeliefDistribution(self):
         """

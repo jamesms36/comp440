@@ -146,8 +146,6 @@ class GreedyBustersAgent(BustersAgent):
 
         mostLikelyPositions = {}
 
-        # print(livingGhosts)
-        # print(livingGhostPositionDistributions)
         for i, beliefs in enumerate(self.ghostBeliefs):
             if livingGhosts[i + 1]:
                 maxBel = -1
