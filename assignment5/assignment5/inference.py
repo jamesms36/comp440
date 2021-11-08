@@ -101,8 +101,14 @@ class DiscreteDistribution(dict):
         >>> round(samples.count('d') * 1.0/N, 1)
         0.0
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        randX = random.random()
+        sum = 0
+        self.normalize()
+        for val in self.items():
+            sum += val[1]
+            if sum > randX:
+                return val[0]
 
 
 class InferenceModule:
