@@ -57,8 +57,9 @@ class RuleBasedClassifier(Classifier):
         """
         # BEGIN_YOUR_CODE (around 8 lines of code expected)
         count = 0
+        split_text = text.split()
         for bad_word in self.blacklist:
-            if bad_word in text:
+            if bad_word in split_text:
                 count = count + 1
                 if count >= self.n:
                     return -1
@@ -119,28 +120,27 @@ def learnWeightsFromPerceptron(trainExamples, featureExtractor, labels, iters = 
     @params iters: Number of training iterations to run.
     @return dict: parameters represented by a mapping from feature (string) to value.
     """
-    return defaultdict(float)
-    # w = {}
-    # for iter in range(iters):
-    #     for text, label in trainExamples:
-    #         y = 0
-    #         if label == labels[0]:
-    #             y = 1
-    #         else:
-    #             y = -1
-    #
-    #         classifier = WeightedClassifier(labels, featureExtractor, w)
-    #         val = 1 if classifier.classify(text) >= 0 else -1
-    #         if val != y:
-    #             result_map = classifier.resmap
-    #
-    #             for key in result_map:
-    #                 if key not in w:
-    #                     w[key] = 0
-    #
-    #             for key in result_map:
-    #                 w[key] = w[key] + result_map[key] * y
-    # return w
+    w = {}
+    for iter in range(iters):
+        for text, label in trainExamples:
+            y = 0
+            if label == labels[0]:
+                y = 1
+            else:
+                y = -1
+
+            classifier = WeightedClassifier(labels, featureExtractor, w)
+            val = 1 if classifier.classify(text) >= 0 else -1
+            if val != y:
+                result_map = classifier.resmap # = featureExtractor(text)
+
+                for key in result_map:
+                    if key not in w:
+                        w[key] = 0
+
+                for key in result_map:
+                    w[key] = w[key] + result_map[key] * y
+    return w
 
 
 
@@ -176,7 +176,7 @@ class MultiClassClassifier(object):
         """
         # BEGIN_YOUR_CODE (around 2 lines of code expected)
         self.labels = labels
-        self.classifiers = classifiers
+        self.classifiers = list(classifiers)
 
     def classify(self, x):
         """
@@ -190,13 +190,17 @@ class MultiClassClassifier(object):
         @param string x: the text message
         @return string y: one of the output labels
         """
-        print(x, self.classifiers, self.labels)
-        # print(self.classifiers[self.labels[0]])
-        # res = zip(*zip(*self.classifiers))
-        res2 = tuple(self.classifiers)
-        print(res, res2)
-        # BEGIN_YOUR_CODE (around 2 lines of code expected)
-        # END_YOUR_CODE
+        results = self.classify(x)
+        max_res = results[0][0]
+        max_val = results[0][1]
+
+        for res, val in results:
+            if val > max_val:
+                max_val = val
+                max_res = res
+
+        return max_res
+
 
 class OneVsAllClassifier(MultiClassClassifier):
     def __init__(self, labels, classifiers):
@@ -212,7 +216,10 @@ class OneVsAllClassifier(MultiClassClassifier):
         @return list (string, double): list of labels with scores 
         """
         # BEGIN_YOUR_CODE (around 4 lines of code expected)
-        raise NotImplementedError("TODO:")       
+        ret_list = []
+        for label, classifier in self.classifiers:
+            ret_list.append((label, classifier.classify(x)))
+        return ret_list
         # END_YOUR_CODE
 
 def learnOneVsAllClassifiers( trainExamples, featureFunction, labels, perClassifierIters = 10 ):
@@ -226,7 +233,21 @@ def learnOneVsAllClassifiers( trainExamples, featureFunction, labels, perClassif
     @param int perClassifierIters: number of iterations to train each classifier
     @return list (label, Classifier)
     """
-    # BEGIN_YOUR_CODE (around 10 lines of code expected)
-    raise NotImplementedError("TODO:")       
-    # END_YOUR_CODE
+    map = {}
+    for l1 in labels:
+        map[l1] = []
+        for text, l2 in trainExamples:
+            if l1 == l2:
+                map[l1].append((text, l1))
+            else:
+                map[l1].append((text, "!"+l1))
+
+    ret_list = []
+    for label in labels:
+        w = learnWeightsFromPerceptron(map[label], featureFunction, [label, "!" + label], perClassifierIters)
+
+        classifier = WeightedClassifier([label, "!" + label], featureFunction, w)
+        ret_list.append((label, classifier))
+
+    return ret_list
 
