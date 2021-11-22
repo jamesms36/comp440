@@ -93,6 +93,7 @@ class WeightedClassifier(Classifier):
         super(WeightedClassifier, self).__init__(labels)
         self.featureFunction = featureFunction
         self.params = params
+        self.resmap = {}
 
     def classify(self, x):
         """
@@ -100,9 +101,10 @@ class WeightedClassifier(Classifier):
         @return double y: classification score; >= 0 if positive label
         """
         result_map = self.featureFunction(x)
+        self.resmap = result_map
         val = 0
-        for key in self.params:
-            if key in result_map:
+        for key in result_map:
+            if key in self.params:
                 val += result_map[key] * self.params[key]
 
         return val
@@ -118,7 +120,7 @@ def learnWeightsFromPerceptron(trainExamples, featureExtractor, labels, iters = 
     @return dict: parameters represented by a mapping from feature (string) to value.
     """
     # return defaultdict(float)
-    w = defaultdict(float)
+    w = {}
     for iter in range(iters):
         for text, label in trainExamples:
             y = 0
@@ -130,15 +132,14 @@ def learnWeightsFromPerceptron(trainExamples, featureExtractor, labels, iters = 
             classifier = WeightedClassifier(labels, featureExtractor, w)
             val = 1 if classifier.classify(text) >= 0 else -1
             if val != y:
-                result_map = featureExtractor(text)
+                result_map = classifier.resmap
 
                 for key in result_map:
                     if key not in w:
                         w[key] = 0
 
-                for key, val in w.items():
-                    if key in result_map:
-                        w[key] = val + result_map[key] * y
+                for key in result_map:
+                    w[key] = w[key] + result_map[key] * y
     return w
 
 
