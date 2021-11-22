@@ -40,7 +40,7 @@ class RuleBasedClassifier(Classifier):
         @param int k: number of words in the blacklist to consider
         """
         super(RuleBasedClassifier, self).__init__(labels)
-        # BEGIN_YOUR_CODE (around 3 lines of code expected) 
+        # BEGIN_YOUR_CODE (around 3 lines of code expected)
         raise NotImplementedError("TODO:")       
         # END_YOUR_CODE
 
@@ -59,9 +59,16 @@ def extractUnigramFeatures(x):
     @param string x: represents the contents of an text message.
     @return dict: feature vector representation of x.
     """
-    # BEGIN_YOUR_CODE (around 6 lines of code expected)
-    raise NotImplementedError("TODO:")       
-    # END_YOUR_CODE
+    word_vector = {}
+    words = x.split()
+    for word in words:
+        if word in word_vector:
+            word_vector[word] += 1
+        else:
+            word_vector[word] = 1
+
+    return word_vector
+
 
 
 class WeightedClassifier(Classifier):
@@ -80,9 +87,13 @@ class WeightedClassifier(Classifier):
         @param string x: the text message
         @return double y: classification score; >= 0 if positive label
         """
-        # BEGIN_YOUR_CODE (around 2 lines of code expected)
-        raise NotImplementedError("TODO:")       
-        # END_YOUR_CODE
+        result_map = self.featureFunction(x)
+        val = 0
+        for key in self.params:
+            if key in result_map:
+                val += result_map[key] * self.params[key]
+
+        return val
 
 def learnWeightsFromPerceptron(trainExamples, featureExtractor, labels, iters = 20):
     """
