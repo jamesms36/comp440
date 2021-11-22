@@ -4,7 +4,9 @@ Text classification
 
 import util
 import operator
+import string
 from collections import Counter
+from collections import defaultdict
 
 class Classifier(object):
     def __init__(self, labels):
@@ -105,9 +107,31 @@ def learnWeightsFromPerceptron(trainExamples, featureExtractor, labels, iters = 
     @params iters: Number of training iterations to run.
     @return dict: parameters represented by a mapping from feature (string) to value.
     """
-    # BEGIN_YOUR_CODE (around 15 lines of code expected)
-    raise NotImplementedError("TODO:")           
-    # END_YOUR_CODE
+    # return defaultdict(float)
+    w = defaultdict(float)
+    for iter in range(iters):
+        for text, label in trainExamples:
+            y = 0
+            if label == labels[0]:
+                y = 1
+            else:
+                y = -1
+
+            classifier = WeightedClassifier(labels, featureExtractor, w)
+            val = 1 if classifier.classify(text) >= 0 else -1
+            if val != y:
+                result_map = featureExtractor(text)
+
+                for key in result_map:
+                    if key not in w:
+                        w[key] = 0
+
+                for key, val in w.items():
+                    if key in result_map:
+                        w[key] = val + result_map[key] * y
+    return w
+
+
 
 def extractBigramFeatures(x):
     """
@@ -116,9 +140,22 @@ def extractBigramFeatures(x):
     @param string x: represents the contents of an email message.
     @return dict: feature vector representation of x.
     """
-    # BEGIN_YOUR_CODE (around 12 lines of code expected)
-    raise NotImplementedError("TODO:")       
-    # END_YOUR_CODE
+    result_map = extractUnigramFeatures(x)
+    words = x.split()
+    for i in range(len(words)):
+        bigram = ""
+        if i == 0 or words[i - 1] in string.punctuation:
+            bigram = "-BEGIN- " + words[i]
+        else:
+            bigram = words[i - 1] + " " + words[i]
+
+        if bigram in result_map:
+            result_map[bigram] += 1
+        else:
+            result_map[bigram] = 1
+
+    return result_map
+
 
 class MultiClassClassifier(object):
     def __init__(self, labels, classifiers):
