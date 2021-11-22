@@ -119,28 +119,28 @@ def learnWeightsFromPerceptron(trainExamples, featureExtractor, labels, iters = 
     @params iters: Number of training iterations to run.
     @return dict: parameters represented by a mapping from feature (string) to value.
     """
-    # return defaultdict(float)
-    w = {}
-    for iter in range(iters):
-        for text, label in trainExamples:
-            y = 0
-            if label == labels[0]:
-                y = 1
-            else:
-                y = -1
-
-            classifier = WeightedClassifier(labels, featureExtractor, w)
-            val = 1 if classifier.classify(text) >= 0 else -1
-            if val != y:
-                result_map = classifier.resmap
-
-                for key in result_map:
-                    if key not in w:
-                        w[key] = 0
-
-                for key in result_map:
-                    w[key] = w[key] + result_map[key] * y
-    return w
+    return defaultdict(float)
+    # w = {}
+    # for iter in range(iters):
+    #     for text, label in trainExamples:
+    #         y = 0
+    #         if label == labels[0]:
+    #             y = 1
+    #         else:
+    #             y = -1
+    #
+    #         classifier = WeightedClassifier(labels, featureExtractor, w)
+    #         val = 1 if classifier.classify(text) >= 0 else -1
+    #         if val != y:
+    #             result_map = classifier.resmap
+    #
+    #             for key in result_map:
+    #                 if key not in w:
+    #                     w[key] = 0
+    #
+    #             for key in result_map:
+    #                 w[key] = w[key] + result_map[key] * y
+    # return w
 
 
 
@@ -175,8 +175,8 @@ class MultiClassClassifier(object):
         @param list (string, Classifier): tuple of (label, classifier); each classifier is a WeightedClassifier that detects label vs NOT-label
         """
         # BEGIN_YOUR_CODE (around 2 lines of code expected)
-        raise NotImplementedError("TODO:")       
-        # END_YOUR_CODE
+        self.labels = labels
+        self.classifiers = classifiers
 
     def classify(self, x):
         """
@@ -190,8 +190,12 @@ class MultiClassClassifier(object):
         @param string x: the text message
         @return string y: one of the output labels
         """
+        print(x, self.classifiers, self.labels)
+        # print(self.classifiers[self.labels[0]])
+        # res = zip(*zip(*self.classifiers))
+        res2 = tuple(self.classifiers)
+        print(res, res2)
         # BEGIN_YOUR_CODE (around 2 lines of code expected)
-        raise NotImplementedError("TODO:")       
         # END_YOUR_CODE
 
 class OneVsAllClassifier(MultiClassClassifier):
