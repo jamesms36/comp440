@@ -8,10 +8,10 @@ TRAIN_PATH_SENTIMENT = 'data/sentiment/train'
 TRAIN_PATH_TOPICS = 'data/topics/train'
 
 def evaluateClassifier(trainExamples, devExamples, classifier):
-    #util.printConfusionMatrix(util.computeConfusionMatrix(trainExamples, classifier))
+    util.printConfusionMatrix(util.computeConfusionMatrix(trainExamples, classifier))
     trainErrorRate = util.computeErrorRate(trainExamples, classifier) 
     print ('trainErrorRate: %f' % trainErrorRate)
-    #util.printConfusionMatrix(util.computeConfusionMatrix(devExamples, classifier))
+    util.printConfusionMatrix(util.computeConfusionMatrix(devExamples, classifier))
     devErrorRate = util.computeErrorRate(devExamples, classifier) 
     print ('devErrorRate: %f' % devErrorRate)
 
@@ -53,11 +53,11 @@ def part2(args):
     examples = util.loadExamples(TRAIN_PATH_SENTIMENT)[:args.examples]
     labels = util.LABELS_SENTIMENT
     trainExamples, devExamples = util.holdoutExamples(examples)
-    #weights = submission.learnWeightsFromPerceptron(trainExamples, submission.extractUnigramFeatures, labels, args.iters)
-    #classifier = submission.WeightedClassifier(labels, submission.extractUnigramFeatures, weights)
-    #weights = submission.learnWeightsFromPerceptron(trainExamples, submission.extractBigramFeatures, labels, args.iters)
-    #classifier = submission.WeightedClassifier(labels, submission.extractBigramFeatures, weights)
-    #evaluateClassifier(trainExamples, devExamples, classifier)
+    weights = submission.learnWeightsFromPerceptron(trainExamples, submission.extractUnigramFeatures, labels, args.iters)
+    classifier = submission.WeightedClassifier(labels, submission.extractUnigramFeatures, weights)
+    weights = submission.learnWeightsFromPerceptron(trainExamples, submission.extractBigramFeatures, labels, args.iters)
+    classifier = submission.WeightedClassifier(labels, submission.extractBigramFeatures, weights)
+    evaluateClassifier(trainExamples, devExamples, classifier)
     for i in range(1,21):
         print ("Iters = ",i)
         weights = submission.learnWeightsFromPerceptron(trainExamples, submission.extractBigramFeatures, labels, i)
