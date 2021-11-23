@@ -18,13 +18,38 @@ def runKMeans(k,patches,maxIter):
     """
     # This line starts you out with randomly initialized centroids in a matrix 
     # with patchSize rows and k columns. Each column is a centroid.
-    centroids = np.random.randn(patches.shape[0],k)
-
+    patchSize = patches.shape[0]
     numPatches = patches.shape[1]
+    centroids = np.random.randn(patchSize, k)
 
-    for i in range(maxIter):
+    for iteration in range(maxIter):
         # BEGIN_YOUR_CODE (around 19 lines of code expected)
-        raise Exception("Not yet implemented")
+
+        # Assignment step
+        z = np.zeros(numPatches)
+        for i in range(numPatches): # assign a zi to each xi
+            min_dist = math.inf
+            xi = patches[:,i]
+            for j in range(k): # find the minimizing Uk
+                uj = centroids[:,j]
+                diff_ij = xi-uj
+                dist_ij = np.sum(diff_ij**2)
+                if dist_ij < min_dist:
+                    min_dist = dist_ij
+                    z[i] = j
+
+        # Update step
+        for i in range(k): # loop over all centroids
+            vector_sum = np.zeros(patchSize)
+            num_vectors = 0
+            for j in range(numPatches): # loop over all elements of z
+                if z[j] == i:
+                    num_vectors = num_vectors + 1
+                    xj = patches[:, j]
+                    vector_sum = vector_sum + xj
+            uk_new = vector_sum/num_vectors
+            centroids[:,i] = uk_new
+
         # END_YOUR_CODE
 
     return centroids
