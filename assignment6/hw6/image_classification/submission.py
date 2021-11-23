@@ -75,7 +75,18 @@ def extractFeatures(patches,centroids):
     features = np.empty((numPatches,k))
 
     # BEGIN_YOUR_CODE (around 9 lines of code expected)
-    raise Exception("Not yet implemented")
+    for i in range(numPatches):
+        xi = patches[:,i]
+        for k_index in range(k):
+            uk = centroids[:,k_index]
+            norm_sum = 0
+            for j in range(k):
+                uj = centroids[:,j]
+                norm_ij = math.sqrt(np.sum((xi-uj)**2))
+                norm_sum = norm_sum + norm_ij
+            a_ijk = norm_sum/k - math.sqrt(np.sum((xi-uk)**2))
+            features[i,k_index] = max(a_ijk, 0)
+
     # END_YOUR_CODE
     return features
 
