@@ -108,7 +108,9 @@ def logisticGradient(theta,featureVector,y):
       1D numpy array of gradient of logistic loss w.r.t. to theta
     """
     # BEGIN_YOUR_CODE (around 2 lines of code expected)
-    raise Exception("Not yet implemented.")
+    yy = 2*y - 1
+    c = -yy*np.exp(-yy*np.dot(theta, featureVector))/(1 + np.exp(-yy*np.dot(theta, featureVector)))
+    return c*featureVector
     # END_YOUR_CODE
 
 ############################################################
@@ -128,6 +130,10 @@ def hingeLossGradient(theta,featureVector,y):
       1D numpy array of gradient of hinge loss w.r.t. to theta
     """
     # BEGIN_YOUR_CODE (around 6 lines of code expected)
-    raise Exception("Not yet implemented.")
+    yy = 2*y - 1
+    if 1-np.dot(theta, featureVector)*yy > 0:
+        return -yy*featureVector
+    else:
+        return 0*featureVector
     # END_YOUR_CODE
 
