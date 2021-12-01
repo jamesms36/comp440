@@ -21,9 +21,40 @@ class Scorer:
         for top_seq in self.top_seqs:
             (rounds, c1, c2) = _PyPacwar.battle(seq.get_seq(), top_seq)
             if c2 == 0:
-                score += (500 - rounds) * 3 + 10000
-            else:
-                score += rounds + 10 * c1
+                if rounds < 100:
+                    score += 20
+                elif rounds < 200:
+                    score += 19
+                elif rounds < 300:
+                    score += 18
+                elif rounds < 500:
+                    score += 17
+                # score += (500 - rounds) * 3 + 10000
+            elif c1 == 0:
+                if rounds < 100:
+                    score += 0
+                elif rounds < 200:
+                    score += 1
+                elif rounds < 300:
+                    score += 2
+                elif rounds < 500:
+                    score += 3
+            elif rounds == 500:
+                if c1 > c2 * 10:
+                    score += 13
+                elif c1 > c2 * 3:
+                    score += 12
+                elif c1 > c2 * 1.5:
+                    score += 11
+                elif c2 > c1 * 10:
+                    score += 7
+                elif c2 > c1 * 3:
+                    score += 8
+                elif c2 > c1 * 1.5:
+                    score += 9
+                else:
+                    score += 10
+                # score += rounds + 10 * c1
         return score
 
 
@@ -123,9 +154,9 @@ class Population:
 
 
 class Gene_Seq:
-    def __init__(self, seq_size = 50):
+    def __init__(self, seq_size=50):
         self.seq_size = seq_size
-        self.seq = list(numpy.random.randint(low = 0,high=4,size=self.seq_size))
+        self.seq = list(numpy.random.randint(low=0, high=4, size=self.seq_size))
 
     def get_seq(self):
         return self.seq
@@ -158,15 +189,15 @@ class Gene_Seq:
         if c2 == 0:
             score = 500 - rounds + 10000
         else:
-            score = rounds + 10*c1
+            score = rounds + 10 * c1
         return score
 
     def crossover(self, partner):
         start = random.randint(0, self.seq_size - 1)
-        end = start + 7 # self.seq_size / 2
-        
+        end = start + 7  # self.seq_size / 2
+
         for i in range(self.seq_size):
-            if ( (i >= start and i < end) or ( (end % self.seq_size) < end and i < end)):
+            if ((i >= start and i < end) or ((end % self.seq_size) < end and i < end)):
                 temp = self.seq[i]
                 self.seq[i] = partner.get_seq()[i]
                 partner.set_gene(i, temp)
@@ -183,28 +214,24 @@ class Gene_Seq:
                 replace_list.append(idx)
 
         for idx in replace_list:
-            self.seq[idx] = numpy.random.randint(low = 0, high=4)
+            self.seq[idx] = numpy.random.randint(low=0, high=4)
 
 
 def main():
     scorer = Scorer()
     scorer.add_top_seq([1] * 50)
     scorer.add_top_seq([3] * 50)
-    scorer.add_top_seq([0,3,0,2,1,0,0,1,1,1,1,1,2,2,2,2,3,0,0,3,3,2,2,1,2,1,2,2,1,2,1,1,2,3,1,3,3,2,1,3,0,1,3,2,3,2,1,1,3,1])
-    scorer.add_top_seq([0,3,1,0,0,0,0,0,1,1,1,1,1,2,1,2,0,1,1,0,3,1,1,1,2,1,1,2,1,1,2,1,1,2,1,3,2,1,1,2,1,1,2,0,2,2,1,1,3,1])
-    #10111132101122010001111111111222101111122231002131
+    scorer.add_top_seq(
+        [0, 3, 0, 2, 1, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 0, 0, 3, 3, 2, 2, 1, 2, 1, 2, 2, 1, 2, 1, 1, 2, 3, 1, 3, 3,
+         2, 1, 3, 0, 1, 3, 2, 3, 2, 1, 1, 3, 1])
+    scorer.add_top_seq(
+        [0, 3, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 1, 2, 0, 1, 1, 0, 3, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 3, 2,
+         1, 1, 2, 1, 1, 2, 0, 2, 2, 1, 1, 3, 1])
+    # 10111132101122010001111111111222101111122231002131
 
     #  10310000111102213003333312333323312333300133213310
-    #01310000100000303103123323323123123333310313223313
+    # 01310000100000303103123323323123123333310313223313
 
-
-
-    a = Gene_Seq()
-    ones_seq = Gene_Seq()
-    ones = [1] * 50
-    # threes = [3] * 50
-    a.set_seq(ones)
-    ones_seq.set_seq(ones)
 
     population = Population()
     population.set_scorer(scorer)
@@ -216,21 +243,11 @@ def main():
             population.add_gene_seq(seq)
 
     tries = 1
-    while tries < 51:
+    while tries < 50:
         population.reproduce()
         score, seq = population.get_max_seq()
         print(tries, population.get_avg_population_score(), score, seq.print_seq())
         tries += 1
-
-    # b1 = population.get_population()[0]
-    # b2 = population.get_population()[1]
-    # print("before", b1.print_seq())
-    # b1.mutate(3)
-    # print(b1.print_seq())
-    # print("before", b2.print_seq())
-    # population.get_population()[0].crossover(population.get_population()[1])
-    # print("after ", population.get_population()[0].print_seq())
-    # print("after ", population.get_population()[1].print_seq())
 
 
 if __name__ == "__main__":
