@@ -1,3 +1,4 @@
 Classifies images for assignment 6.
-It starts with K-means clustering to get a sense of the data. Then, part 2 performs feature extraction, and then using supervised learning with a perceptron to distinguish birds from planes. 
+It starts with K-means clustering to get a sense of the data. 
+Then, part 2 performs feature extraction, and then using supervised learning with a perceptron to distinguish birds from planes. 
 
